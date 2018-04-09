@@ -14,9 +14,9 @@ var renderStatistics = function(ctx, names, times) {
   //вводим переменные для отрисовки столбцов
   var columnMaxHeight = 150; //высота гистограммы (максимальная высота столбца)
   var graphicOffsetY = 100; //позиция диаграммы по Y
-  var offsetXStart = 140; //позиция первого столбца по горизонтали
-  var width = 40; //ширина столбца
-  var offsetX = 50; //отступ между столбцами
+  var columnStart = 140; //позиция первого столбца по горизонтали
+  var columnWidth = 40; //ширина столбца
+  var columnOffsetX = 50; //отступ между столбцами
   var alpha = function () {
     return 1 - 0.7 * Math.random(); //варируем прозрачность для изменения насыщенности цвета колонки в разумных пределах чтобы не получить прозрачный столбец
   }
@@ -56,8 +56,8 @@ var renderStatistics = function(ctx, names, times) {
   }
 
   //функция отрисовки столбцов
-  var columnDraw = function (maxTime) {
-    var startX = offsetXStart; //обозначаем начальную точку по X для отрисовки столбца, у первого он равен 140
+  var columnDraw = function (maxTime, columnMaxHeight, graphicOffsetY, columnStart, columnWidth, columnOffsetX, currentColumnColor) {
+    var startX = columnStart; //обозначаем начальную точку по X для отрисовки столбца, у первого он равен 140
     var startY = 0; //обозначаем начальную точку по Y для отрисовки столбца
 
     //переменные для высоты столбца
@@ -67,7 +67,7 @@ var renderStatistics = function(ctx, names, times) {
     //перебираем массив имен и рисуем колонки
     for (var i = 0; i < names.length; i++) {
       //если не первый столбец то рисуем его от края с отступом в 140 + ширина + отступ
-      startX = offsetXStart + width*i + offsetX*i;
+      startX = columnStart + columnWidth*i + columnOffsetX*i;
 
       //считаем высоту столбца
       height = (times[i] / maxTime) * 100; //высота в процентах
@@ -81,7 +81,7 @@ var renderStatistics = function(ctx, names, times) {
       } else {
         ctx.fillStyle = 'rgba(0, 0, 255,'+ alpha() +')';
       }
-      ctx.fillRect(startX, startY, width, heightPx);
+      ctx.fillRect(startX, startY, columnWidth, heightPx);
 
       //рисуем имена под столбцами
       ctx.font = font;
@@ -99,5 +99,5 @@ var renderStatistics = function(ctx, names, times) {
   cloudDraw(cloudX, cloudY, cloudWidth, cloudHeight, cloudColor, cloudShadow);
 
   //вызов функции отрисовки столбцов
-  columnDraw(getMaxTime(times));
+  columnDraw(getMaxTime(times), columnMaxHeight, graphicOffsetY, columnStart, columnWidth, columnOffsetX, currentColumnColor);
 }
