@@ -51,7 +51,7 @@ var createRandomValue = function (data) {
 };
 
 // создание массива похожих волшебников
-var createObjects = function () {
+var generateWizards = function () {
   var wizards = [];
   for (var i = 0; i < WIZARDS; i++) {
     var wizard = {};
@@ -82,7 +82,7 @@ var drawWizard = function (wizards) {
   return fragment;
 };
 
-drawWizard(createObjects());
+drawWizard(generateWizards());
 
 // поиск списка похожих волшебников
 var wizardsList = document.querySelector('.setup-similar-list');
