@@ -82,7 +82,7 @@ var fragment = document.createDocumentFragment();
 var drawWizard = function (elements) {
   for (var i = 0; i < wizards.length; i++) {
     var wizardElement = wizardTemplate.cloneNode(true);
-    wizardElement.querySelector('.setup-similar-label').textContent = elements[i].name + elements[i].surname;
+    wizardElement.querySelector('.setup-similar-label').textContent = elements[i].name + ' ' + elements[i].surname;
     wizardElement.querySelector('.wizard-coat').style.fill = elements[i].coat;
     wizardElement.querySelector('.wizard-eyes').style.fill = elements[i].eyes;
     fragment.appendChild(wizardElement);
