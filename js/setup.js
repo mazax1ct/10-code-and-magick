@@ -60,6 +60,10 @@ var setupOpen = document.querySelector('.setup-open');
 var setupClose = document.querySelector('.setup-close');
 var eyesChanger = document.querySelector('.setup-wizard .wizard-eyes');
 var fireballChanger = document.querySelector('.setup-fireball-wrap');
+var eyeBlock = document.querySelector('.wizard-eyes');
+var eyeInput = document.querySelector('input[name="eyes-color"]');
+var fireballBlock = document.querySelector('.setup-fireball-wrap');
+var fireballInput = document.querySelector('input[name="fireball-color"]');
 
 // функция открытия попапа
 var openPopup = function () {
@@ -107,8 +111,6 @@ setupClose.addEventListener('click', function () {
 // изменение цвета глаз волшебника
 eyesChanger.addEventListener('click', function () {
   var color = createRandomValue(EYES_COLORS);
-  var eyeBlock = document.querySelector('.wizard-eyes');
-  var eyeInput = document.getElementsByName('eyes-color')[0];
   eyeBlock.style.fill = color;
   eyeInput.value = color;
 });
@@ -116,8 +118,6 @@ eyesChanger.addEventListener('click', function () {
 // изменение цвета фаербола
 fireballChanger.addEventListener('click', function () {
   var color = createRandomValue(FIREBALL_COLORS);
-  var fireballBlock = document.querySelector('.setup-fireball-wrap');
-  var fireballInput = document.getElementsByName('fireball-color')[0];
   fireballBlock.style.backgroundColor = color;
   fireballInput.value = color;
 });
