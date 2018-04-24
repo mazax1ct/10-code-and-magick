@@ -126,7 +126,6 @@
   var shopElement = document.querySelector('.setup-artifacts-shop'); // блок, откуда изначально берется артефакт
   var artifactsElement = document.querySelector('.setup-artifacts'); // блок, куда можно перетащить артефакт
   var draggedItem = null; // определяем переменную для перетаскиваемого объекта
-  var draggedFrom = null;
 
   // функция обработчика начала перетаскивания
   var elementDragStartHandler = function (evt) {
@@ -135,16 +134,13 @@
         draggedItem = evt.target.cloneNode();
         evt.dataTransfer.setData('text/plain', evt.target.alt);
       }
-      draggedFrom = 'shop';
     } else {
       if (evt.target.tagName.toLowerCase() === 'img') {
         draggedItem = evt.target;
         evt.dataTransfer.setData('text/plain', evt.target.alt);
       }
-      draggedFrom = 'inventory';
     }
     artifactsElement.style.outline = '2px dashed red';
-    console.log(evt, draggedFrom);
   };
 
   // функция обработчика конца перетаскивания
