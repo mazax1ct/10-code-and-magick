@@ -126,28 +126,40 @@
   var shopElement = document.querySelector('.setup-artifacts-shop'); // блок, откуда изначально берется артефакт
   var artifactsElement = document.querySelector('.setup-artifacts'); // блок, куда можно перетащить артефакт
   var draggedItem = null; // определяем переменную для перетаскиваемого объекта
+  var draggedFrom = null;
 
   // функция обработчика начала перетаскивания
   var elementDragStartHandler = function (evt) {
-    if (evt.target.tagName.toLowerCase() === 'img') {
-      draggedItem = evt.target;
-      evt.dataTransfer.setData('text/plain', evt.target.alt);
+    if (evt.target.parentElement.parentElement.className === 'setup-artifacts-shop') {
+      if (evt.target.tagName.toLowerCase() === 'img') {
+        draggedItem = evt.target.cloneNode();
+        evt.dataTransfer.setData('text/plain', evt.target.alt);
+      }
+      draggedFrom = 'shop';
+    } else {
+      if (evt.target.tagName.toLowerCase() === 'img') {
+        draggedItem = evt.target;
+        evt.dataTransfer.setData('text/plain', evt.target.alt);
+      }
+      draggedFrom = 'inventory';
     }
     artifactsElement.style.outline = '2px dashed red';
+    console.log(evt, draggedFrom);
   };
 
+  // функция обработчика конца перетаскивания
   var elementDragEndHandler = function () {
     artifactsElement.style.outline = '';
   };
 
-  // навешиваем обработчики начала перетаскивания на аретфакт в зависимости от того где он находится
+  // навешиваем обработчики начала/конца перетаскивания на контейнер с аретфактами
   shopElement.addEventListener('dragstart', elementDragStartHandler);
+  shopElement.addEventListener('dragend', elementDragEndHandler);
+
   artifactsElement.addEventListener('dragstart', elementDragStartHandler);
+  artifactsElement.addEventListener('dragend', elementDragEndHandler);
 
-  // навешиваем на документ обработчик слушающий завершение перетаскивания
-  document.addEventListener('dragend', elementDragEndHandler);
-
-  // навешиваем обработчик на событие нахождения элемента в зоне дропа
+  // навешиваем обработчик события нахождения элемента в зоне дропа
   artifactsElement.addEventListener('dragover', function (evt) {
     evt.preventDefault();
     return false;
@@ -157,26 +169,23 @@
   artifactsElement.addEventListener('drop', function (evt) {
     // убираем желтый фон
     evt.target.style.backgroundColor = '';
-    // проверяем есть ли в блоке "дети"
-    if (evt.target.childElementCount === 0) {
-      // копируем перетаскиваемый элемент и вставляем
-      var copy = draggedItem.cloneNode();
-      evt.target.appendChild(copy);
-      // убираем возможность перетаскивать скопированный элемент
-      copy.setAttribute('draggable', false);
+    if (evt.target.childElementCount === 0 && evt.target.tagName.toLowerCase() === 'div') {
+      evt.target.appendChild(draggedItem);
     }
+    artifactsElement.style.outline = '';
     evt.preventDefault();
   });
 
-  // навешиваем обработчик на событие вхождения в зону дропа
+  // навешиваем обработчики на событие вхождения/выхода из зоны дропа
   artifactsElement.addEventListener('dragenter', function (evt) {
-    if (evt.target.childElementCount === 0 && evt.target.tagName.toLowerCase() !== 'img') {
+    if (evt.target.childElementCount === 0 && evt.target.tagName.toLowerCase() === 'div') {
       evt.target.style.backgroundColor = 'yellow';
+    } else {
+      evt.target.style.backgroundColor = 'red';
     }
     evt.preventDefault();
   });
 
-  // навешиваем обработчик на событие выхода из зоны дропа
   artifactsElement.addEventListener('dragleave', function (evt) {
     evt.target.style.backgroundColor = '';
     evt.preventDefault();
