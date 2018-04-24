@@ -1,173 +1,189 @@
 'use strict';
+(function () {
+  // входные данные
+  var NAMES = [
+    'Иван',
+    'Хуан Себастьян',
+    'Мария',
+    'Кристоф',
+    'Виктор',
+    'Юлия',
+    'Люпита',
+    'Вашингтон'
+  ];
 
-// входные данные
-var NAMES = [
-  'Иван',
-  'Хуан Себастьян',
-  'Мария',
-  'Кристоф',
-  'Виктор',
-  'Юлия',
-  'Люпита',
-  'Вашингтон'
-];
+  var LAST_NAMES = [
+    'да Марья',
+    'Верон',
+    'Мирабелла',
+    'Вальц',
+    'Онопко',
+    'Топольницкая',
+    'Нионго',
+    'Ирвинг'
+  ];
 
-var LAST_NAMES = [
-  'да Марья',
-  'Верон',
-  'Мирабелла',
-  'Вальц',
-  'Онопко',
-  'Топольницкая',
-  'Нионго',
-  'Ирвинг'
-];
+  var COATS_COLORS = [
+    'rgb(101, 137, 164)',
+    'rgb(241, 43, 107)',
+    'rgb(146, 100, 161)',
+    'rgb(56, 159, 117)',
+    'rgb(215, 210, 55)',
+    'rgb(0, 0, 0)'
+  ];
 
-var COATS_COLORS = [
-  'rgb(101, 137, 164)',
-  'rgb(241, 43, 107)',
-  'rgb(146, 100, 161)',
-  'rgb(56, 159, 117)',
-  'rgb(215, 210, 55)',
-  'rgb(0, 0, 0)'
-];
+  var EYES_COLORS = [
+    'black',
+    'red',
+    'blue',
+    'yellow',
+    'green'
+  ];
 
-var EYES_COLORS = [
-  'black',
-  'red',
-  'blue',
-  'yellow',
-  'green'
-];
+  var WIZARDS = 4;
 
-var WIZARDS = 4;
+  var FIREBALL_COLORS = [
+    '#ee4830',
+    '#30a8ee',
+    '#5ce6c0',
+    '#e848d5',
+    '#e6e848'
+  ];
 
-var FIREBALL_COLORS = [
-  '#ee4830',
-  '#30a8ee',
-  '#5ce6c0',
-  '#e848d5',
-  '#e6e848'
-];
+  // ищем блоки в разметке
+  var eyesChanger = document.querySelector('.setup-wizard .wizard-eyes');
+  var fireballChanger = document.querySelector('.setup-fireball-wrap');
+  var eyeBlock = document.querySelector('.wizard-eyes');
+  var eyeInput = document.querySelector('input[name="eyes-color"]');
+  var fireballBlock = document.querySelector('.setup-fireball-wrap');
+  var fireballInput = document.querySelector('input[name="fireball-color"]');
 
-var ENTER_CODE = 13;
+  // изменение цвета глаз волшебника
+  eyesChanger.addEventListener('click', function () {
+    var color = createRandomValue(EYES_COLORS);
+    eyeBlock.style.fill = color;
+    eyeInput.value = color;
+  });
 
-var ESC_CODE = 27;
+  // изменение цвета фаербола
+  fireballChanger.addEventListener('click', function () {
+    var color = createRandomValue(FIREBALL_COLORS);
+    fireballBlock.style.backgroundColor = color;
+    fireballInput.value = color;
+  });
 
-// ищем блоки в разметке
-var setup = document.querySelector('.setup');
-var setupOpen = document.querySelector('.setup-open');
-var setupClose = document.querySelector('.setup-close');
-var eyesChanger = document.querySelector('.setup-wizard .wizard-eyes');
-var fireballChanger = document.querySelector('.setup-fireball-wrap');
-var eyeBlock = document.querySelector('.wizard-eyes');
-var eyeInput = document.querySelector('input[name="eyes-color"]');
-var fireballBlock = document.querySelector('.setup-fireball-wrap');
-var fireballInput = document.querySelector('input[name="fireball-color"]');
+  // генерация случайных данных
+  var createRandomValue = function (data) {
+    return data[Math.floor(Math.random() * data.length)];
+  };
 
-// функция открытия попапа
-var openPopup = function () {
-  setup.classList.remove('hidden');
-  document.addEventListener('keydown', onPopupEscPress);
-};
+  // создание массива похожих волшебников
+  var generateWizards = function () {
+    var wizards = [];
+    for (var i = 0; i < WIZARDS; i++) {
+      var wizard = {};
+      wizard['name'] = createRandomValue(NAMES);
+      wizard['surname'] = createRandomValue(LAST_NAMES);
+      wizard['coat'] = createRandomValue(COATS_COLORS);
+      wizard['eyes'] = createRandomValue(EYES_COLORS);
+      wizards.push(wizard);
+    }
+    return wizards;
+  };
 
-// функция закрытия попапа
-var closePopup = function () {
-  setup.classList.add('hidden');
-  document.removeEventListener('keydown', onPopupEscPress);
-};
+  // работа с шаблоном
+  var wizardTemplate = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
 
-// функция для обработчика нажатия Esc в открытом попапе
-var onPopupEscPress = function (evt) {
-  if (evt.keyCode === ESC_CODE) {
-    closePopup();
-  }
-};
+  // работа с фрагментом шаблона
+  var fragment = document.createDocumentFragment();
 
-// обработчик открытия попапа по клику
-setupOpen.addEventListener('click', function () {
-  openPopup();
-});
+  // функция создания фрагментов на основе сгененрированных ранее данных
+  var drawWizard = function (wizards) {
+    for (var i = 0; i < wizards.length; i++) {
+      var wizardElement = wizardTemplate.cloneNode(true);
+      wizardElement.querySelector('.setup-similar-label').textContent = wizards[i].name + ' ' + wizards[i].surname;
+      wizardElement.querySelector('.wizard-coat').style.fill = wizards[i].coat;
+      wizardElement.querySelector('.wizard-eyes').style.fill = wizards[i].eyes;
+      fragment.appendChild(wizardElement);
+    }
+    return fragment;
+  };
 
-// обработчик открытия попапа с клавиатуры
-setupOpen.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === ENTER_CODE) {
-    openPopup();
-  }
-});
+  drawWizard(generateWizards());
 
-// обработчик закрытия попапа с клавиатуры
-setupClose.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === ENTER_CODE) {
-    closePopup();
-  }
-});
+  // поиск списка похожих волшебников
+  var wizardsList = document.querySelector('.setup-similar-list');
 
-// обработчик закрытия попапа по клику
-setupClose.addEventListener('click', function () {
-  closePopup();
-});
+  // вставка фрагмента
+  wizardsList.appendChild(fragment);
 
-// изменение цвета глаз волшебника
-eyesChanger.addEventListener('click', function () {
-  var color = createRandomValue(EYES_COLORS);
-  eyeBlock.style.fill = color;
-  eyeInput.value = color;
-});
+  // найдем и отобразим блок с похожими волшебниками
+  var setupSimilar = document.querySelector('.setup-similar');
 
-// изменение цвета фаербола
-fireballChanger.addEventListener('click', function () {
-  var color = createRandomValue(FIREBALL_COLORS);
-  fireballBlock.style.backgroundColor = color;
-  fireballInput.value = color;
-});
+  setupSimilar.classList.remove('hidden');
 
-// генерация случайных данных
-var createRandomValue = function (data) {
-  return data[Math.floor(Math.random() * data.length)];
-};
+  // перетаскивание артефактов
+  var shopElement = document.querySelector('.setup-artifacts-shop'); // блок, откуда изначально берется артефакт
+  var artifactsElement = document.querySelector('.setup-artifacts'); // блок, куда можно перетащить артефакт
+  var draggedItem = null; // определяем переменную для перетаскиваемого объекта
 
-// создание массива похожих волшебников
-var generateWizards = function () {
-  var wizards = [];
-  for (var i = 0; i < WIZARDS; i++) {
-    var wizard = {};
-    wizard['name'] = createRandomValue(NAMES);
-    wizard['surname'] = createRandomValue(LAST_NAMES);
-    wizard['coat'] = createRandomValue(COATS_COLORS);
-    wizard['eyes'] = createRandomValue(EYES_COLORS);
-    wizards.push(wizard);
-  }
-  return wizards;
-};
+  // функция обработчика начала перетаскивания
+  var elementDragStartHandler = function (evt) {
+    if (evt.target.parentElement.parentElement.className === 'setup-artifacts-shop') {
+      if (evt.target.tagName.toLowerCase() === 'img') {
+        draggedItem = evt.target.cloneNode();
+        evt.dataTransfer.setData('text/plain', evt.target.alt);
+      }
+    } else {
+      if (evt.target.tagName.toLowerCase() === 'img') {
+        draggedItem = evt.target;
+        evt.dataTransfer.setData('text/plain', evt.target.alt);
+      }
+    }
+    artifactsElement.style.outline = '2px dashed red';
+  };
 
-// работа с шаблоном
-var wizardTemplate = document.querySelector('#similar-wizard-template').content.querySelector('.setup-similar-item');
+  // функция обработчика конца перетаскивания
+  var elementDragEndHandler = function () {
+    artifactsElement.style.outline = '';
+  };
 
-// работа с фрагментом шаблона
-var fragment = document.createDocumentFragment();
+  // навешиваем обработчики начала/конца перетаскивания на контейнер с аретфактами
+  shopElement.addEventListener('dragstart', elementDragStartHandler);
+  shopElement.addEventListener('dragend', elementDragEndHandler);
 
-// функция создания фрагментов на основе сгененрированных ранее данных
-var drawWizard = function (wizards) {
-  for (var i = 0; i < wizards.length; i++) {
-    var wizardElement = wizardTemplate.cloneNode(true);
-    wizardElement.querySelector('.setup-similar-label').textContent = wizards[i].name + ' ' + wizards[i].surname;
-    wizardElement.querySelector('.wizard-coat').style.fill = wizards[i].coat;
-    wizardElement.querySelector('.wizard-eyes').style.fill = wizards[i].eyes;
-    fragment.appendChild(wizardElement);
-  }
-  return fragment;
-};
+  artifactsElement.addEventListener('dragstart', elementDragStartHandler);
+  artifactsElement.addEventListener('dragend', elementDragEndHandler);
 
-drawWizard(generateWizards());
+  // навешиваем обработчик события нахождения элемента в зоне дропа
+  artifactsElement.addEventListener('dragover', function (evt) {
+    evt.preventDefault();
+    return false;
+  });
 
-// поиск списка похожих волшебников
-var wizardsList = document.querySelector('.setup-similar-list');
+  // навешиваем обработчик на событие дропа
+  artifactsElement.addEventListener('drop', function (evt) {
+    // убираем желтый фон
+    evt.target.style.backgroundColor = '';
+    if (evt.target.childElementCount === 0 && evt.target.tagName.toLowerCase() === 'div') {
+      evt.target.appendChild(draggedItem);
+    }
+    artifactsElement.style.outline = '';
+    evt.preventDefault();
+  });
 
-// вставка фрагмента
-wizardsList.appendChild(fragment);
+  // навешиваем обработчики на событие вхождения/выхода из зоны дропа
+  artifactsElement.addEventListener('dragenter', function (evt) {
+    if (evt.target.childElementCount === 0 && evt.target.tagName.toLowerCase() === 'div') {
+      evt.target.style.backgroundColor = 'yellow';
+    } else {
+      evt.target.style.backgroundColor = 'red';
+    }
+    evt.preventDefault();
+  });
 
-// найдем и отобразим блок с похожими волшебниками
-var setupSimilar = document.querySelector('.setup-similar');
-
-setupSimilar.classList.remove('hidden');
+  artifactsElement.addEventListener('dragleave', function (evt) {
+    evt.target.style.backgroundColor = '';
+    evt.preventDefault();
+  });
+})();
