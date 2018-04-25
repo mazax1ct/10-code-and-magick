@@ -32,14 +32,6 @@
     'rgb(0, 0, 0)'
   ];
 
-  var EYES_COLORS = [
-    'black',
-    'red',
-    'blue',
-    'yellow',
-    'green'
-  ];
-
   var WIZARDS = 4;
 
   // создание массива похожих волшебников
@@ -50,7 +42,7 @@
       wizard['name'] = window.util.createRandomValue(NAMES);
       wizard['surname'] = window.util.createRandomValue(LAST_NAMES);
       wizard['coat'] = window.util.createRandomValue(COATS_COLORS);
-      wizard['eyes'] = window.util.createRandomValue(EYES_COLORS);
+      wizard['eyes'] = window.util.createRandomValue(window.sharedConstants.eyesColors);
       wizards.push(wizard);
     }
     return wizards;
